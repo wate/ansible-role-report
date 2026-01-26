@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  role_name: report
+  author: your name
+  description: Setup report(work in progress)
+  license: Apache
+  min_ansible_version: "2.18"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - bullseye
+dependencies: []

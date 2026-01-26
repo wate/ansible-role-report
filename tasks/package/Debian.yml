@@ -1,0 +1,37 @@
+# code: language=ansible
+---
+# - name: Set Install version variable
+#   when: report_version == 'latest'
+#   block:
+#     - name: Set Github API request header
+#       ansible.builtin.set_fact:
+#         github_api_request_headers:
+#           Accept: application/vnd.github+json
+#     - name: Merge Github API Authorization request header
+#       ansible.builtin.set_fact:
+#         github_api_request_headers: "{{ github_api_request_headers | combine(merge_request_header) }}"
+#       vars:
+#         merge_request_header:
+#           Authorization: Bearer {{ lookup('env', 'GITHUB_TOKEN') }}
+#       when: lookup('env', 'GITHUB_TOKEN') | length > 0
+#     - name: Get latest release
+#       ansible.builtin.uri:
+#         url: https://api.github.com/repos/{{ report_repo }}/releases/latest
+#         headers: "{{ github_api_request_headers }}"
+#       register: latest_releases
+#     - name: Set package version variable
+#       ansible.builtin.set_fact:
+#         report_version: "{{ latest_releases.json.tag_name }}"
+# - name: Set asset file variable
+#   ansible.builtin.set_fact:
+#     asset_file: report_{{ report_version[1:] }}_{{ arch_type_maps[ansible_facts['architecture']] }}.deb
+#   vars:
+#     arch_type_maps:
+#       x86_64: amd64
+#       aarch64: arm64
+# - name: Install report
+#   ansible.builtin.apt:
+#     deb: https://github.com/{{ report_repo }}/releases/download/{{ report_version }}/{{ asset_file }}
+- name: Install report packages
+  ansible.builtin.apt:
+    name: "{{ report_packages }}"

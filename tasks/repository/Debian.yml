@@ -1,0 +1,40 @@
+# code: language=ansible
+---
+- name: Install repository dependency packages
+  ansible.builtin.apt:
+    name:
+      - python3-apt
+      - python3-debian
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+# - name: Create GPG key directory
+#   ansible.builtin.file:
+#     path: "{{ report_apt_key_dest | dirname }}"
+#     state: directory
+#     mode: "0755"
+# - name: Download GPG key
+#   ansible.builtin.get_url:
+#     url: "{{ report_apt_key_url }}"
+#     dest: "{{ report_apt_key_download_dest }}"
+#     mode: "0644"
+#   register: gpg_key_download_result
+# - name: Convert GPG key
+#   ansible.builtin.command:
+#     cmd: gpg --dearmor -o {{ report_apt_key_dest }} {{ report_apt_key_download_dest }}
+#   when: gpg_key_download_result is changed
+# - name: Add report repository
+#   ansible.builtin.deb822_repository:
+#     name: report
+#     uris: https://packages.repository.com/debian
+#     suites: "{{ ansible_facts.distribution_release }}"
+#     components: main
+#     signed_by: "{{ report_apt_key_dest }}"
+#     enabled: true
+#     state: present
+#   register: apt_repository_result
+# - name: Update apt cache
+#   ansible.builtin.apt:
+#     update_cache: true
+#   when: apt_repository_result is changed

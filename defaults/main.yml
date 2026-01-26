@@ -1,0 +1,28 @@
+---
+## -----------------
+## インストールするバージョン
+## -----------------
+report_version: latest
+
+## -----------------
+## インストールするパッケージ
+## -----------------
+report_packages: []
+
+## -----------------
+## reportのポート番号
+## -----------------
+#report_port: 123456
+
+## -----------------
+## reportの設定
+## -----------------
+report_cfg: []
+
+## -------------------
+## サーバーへの接続を許可するIPアドレス
+## -------------------
+# report_allow_connect_other_host: 10.0.0.0/8
+# report_allow_connect_other_host: 172.16.0.0/12
+# report_allow_connect_other_host: 192.168.0.0/16
+# report_allow_connect_other_host: any

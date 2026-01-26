@@ -1,0 +1,12 @@
+---
+report_dependency_packages: []
+
+# report_apt_key_url: https://packages.repository.com/report.gpg.key
+# report_apt_key_download_dest: /etc/apt/keyrings/report.gpg.key
+# report_apt_key_dest: /etc/apt/keyrings/report.gpg
+
+# report_repo: owner_name/repo_name
+
+report_root: /opt/report
+report_user: report
+report_group: report
