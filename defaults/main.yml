@@ -14,6 +14,21 @@ report_dir: ./report
 # report_repository_info: https://github.com/example/repo
 
 ## -------------
+## 脆弱性スキャン設定
+## osv-scannerの設定ファイル内容（TOMLフォーマット）
+## 詳細: https://google.github.io/osv-scanner/configuration/
+## 例: IgnoredVulns, PackageOverridesなどを設定可能
+## -------------
+# report_osv_scanner_config: |
+#   [[IgnoredVulns]]
+#   id = "DEBIAN-CVE-2011-3374"
+#   reason = "No ssh servers are connected"
+#
+#   [[PackageOverrides]]
+#   name = "lib"
+#   ignore = true
+
+## -------------
 ## サービスの稼働状況のフィルター変数
 ## -------------
 report_service:
