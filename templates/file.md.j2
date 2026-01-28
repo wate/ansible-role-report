@@ -1,0 +1,51 @@
+ファイルレポート
+====================
+{% for find_files_result in report_file_searches_results %}
+
+{{ find_files_result.target.name }}
+----------------------------------
+
+* 対象ディレクトリ：`{{ find_files_result.target.path }}`
+{% if find_files_result.target.patterns is defined %}
+* ファイル名パターン：
+{% for find_files_pattern in find_files_result.target.patterns %}
+    * `{{ find_files_pattern }}`
+{% endfor %}
+{% endif %}
+{% if find_files_result.target.excludes is defined %}
+* ファイル名除外パターン：
+{% for exclude_files_pattern in find_files_result.target.excludes %}
+    * `{{ exclude_files_pattern }}`
+{% endfor %}
+{% endif %}
+{% if find_files_result.target.size is defined %}
+* サイズ：`{{ find_files_result.target.size }}`
+{% endif %}
+{% if find_files_result.target.age is defined %}
+* 経過期間：`{{ find_files_result.target.age }}`
+{% endif %}
+
+### 結果
+
+{% if find_files_result.files %}
+合計：{{ find_files_result.files | map(attribute='size') | sum | human_readable }}
+
+| サイズ          | 更新日時            | パス                                                                             |
+| ---------------:| ------------------- |--------------------------------------------------------------------------------- |
+{% for find_file in find_files_result.files -%}
+{% set file_size_kb = find_file.size / 1024 %}
+{% if file_size_kb >= 1048576 %}
+{% set file_size_gb = (file_size_kb / 1048576) | round(2) %}
+| {{ "%15s" | format(file_size_gb | string + ' GB') }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% elif file_size_kb >= 1024 %}
+{% set file_size_mb = (file_size_kb / 1024) | round(2) %}
+| {{ "%15s" | format(file_size_mb | string + ' MB') }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% else %}
+{% set file_size_kb_display = file_size_kb | round(2) %}
+| {{ "%15s" | format(file_size_kb_display | string + ' KB') }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% endif %}
+{% endfor %}
+{% else %}
+該当するファイルは存在しません
+{% endif %}
+{% endfor %}

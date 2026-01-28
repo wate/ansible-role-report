@@ -19,23 +19,46 @@
     - variable_file is not none
     - variable_file | length > 0
   tags: role_report_include_vars
-- name: Import repository task
+- name: Import prepare task
   ansible.builtin.import_tasks:
-    file: repository.yml
-  tags: role_report_repository
+    file: prepare.yml
+  tags: role_report_prepare
 - name: Import dependency task
   ansible.builtin.import_tasks:
     file: dependency.yml
   tags: role_report_dependency
-- name: Import package task
+- name: Import basic report task
+  ansible.builtin.import_tasks:
+    file: basic.yml
+  tags: role_report_basic
+- name: Import package report task
   ansible.builtin.import_tasks:
     file: package.yml
   tags: role_report_package
-- name: Import setting task
+- name: Import listen port report task
   ansible.builtin.import_tasks:
-    file: setting.yml
-  tags: role_report_setting
-- name: Import service task
+    file: port.yml
+  tags: role_report_port
+- name: Import disk report task
   ansible.builtin.import_tasks:
-    file: service.yml
-  tags: role_report_service
+    file: disk.yml
+  tags: role_report_disk
+- name: Import traffic report task
+  ansible.builtin.import_tasks:
+    file: traffic.yml
+  tags: role_report_traffic
+- name: Import user/group report task
+  ansible.builtin.import_tasks:
+    file: user_group.yml
+  tags:
+    - role_report_user
+    - role_report_group
+    - role_report_user_group
+- name: Import file report task
+  ansible.builtin.import_tasks:
+    file: file.yml
+  tags: role_report_file
+- name: Import vulnerability report task
+  ansible.builtin.import_tasks:
+    file: vulnerability.yml
+  tags: role_report_vulnerability

@@ -1,0 +1,21 @@
+# code: language=ansible
+---
+- name: Set Github API request header
+  ansible.builtin.set_fact:
+    github_api_request_headers:
+      Accept: application/vnd.github+json
+- name: Merge Github API Authorization request header
+  ansible.builtin.set_fact:
+    github_api_request_headers: "{{ github_api_request_headers | combine(merge_request_header) }}"
+  vars:
+    merge_request_header:
+      Authorization: Bearer {{ lookup('env', 'GITHUB_TOKEN') }}
+  when: lookup('env', 'GITHUB_TOKEN') | length > 0
+- name: Get latest release({{ target_name | default('') }})
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/{{ github_repo }}/releases/latest
+    headers: "{{ github_api_request_headers }}"
+  register: latest_release
+- name: Set package version variable({{ target_name | default('') }})
+  ansible.builtin.set_fact:
+    latest_version: "{{ latest_release.json.tag_name }}"

@@ -1,13 +1,13 @@
 ---
 galaxy_info:
   role_name: report
-  author: your name
-  description: Setup report(work in progress)
+  author: yoshiaki tanaka
+  description: Generate server reports
   license: Apache
-  min_ansible_version: "2.18"
+  min_ansible_version: "2.20"
   platforms:
     - name: Debian
       versions:
+        - trixie
         - bookworm
-        - bullseye
 dependencies: []

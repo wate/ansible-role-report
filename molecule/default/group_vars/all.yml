@@ -1,1 +1,22 @@
 ---
+## テスト用のレポート出力先（ワークスペース内）
+report_dir: ./molecule-report
+
+## ディスク使用量を調査するディレクトリ
+report_disk_usage_dirs:
+  - /etc
+  - /var/log
+
+## 検索対象ファイル情報
+report_file_searches:
+  - name: ログファイル
+    path: /var/log
+    size: 1M
+    patterns:
+      - "*.log"
+    excludes:
+      - "*.gz"
+  - name: 設定ファイル
+    path: /etc
+    patterns:
+      - "*.conf"

@@ -1,28 +1,80 @@
 ---
-## -----------------
-## インストールするバージョン
-## -----------------
-report_version: latest
+## -------------
+## レポートの出力先ディレクトリ
+## レポートはコントロールノード側に作成されます
+## ※このディレクトリ内に各ホスト毎のディレクトリを作成しレポートを出力します
+## -------------
+report_dir: ./report
 
-## -----------------
-## インストールするパッケージ
-## -----------------
-report_packages: []
+## -------------
+## プラットフォーム情報（オプション）
+## レポートの上部に表示されます
+## -------------
+# report_platform: 本番環境
+# report_repository_info: https://github.com/example/repo
 
-## -----------------
-## reportのポート番号
-## -----------------
-#report_port: 123456
+## -------------
+## 脆弱性スキャン設定
+## osv-scannerの設定ファイル内容（TOMLフォーマット）
+## 詳細: https://google.github.io/osv-scanner/configuration/
+## 例: IgnoredVulns, PackageOverridesなどを設定可能
+## -------------
+# report_osv_scanner_config: |
+#   [[IgnoredVulns]]
+#   id = "DEBIAN-CVE-2011-3374"
+#   reason = "No ssh servers are connected"
+#
+#   [[PackageOverrides]]
+#   name = "lib"
+#   ignore = true
 
-## -----------------
-## reportの設定
-## -----------------
-report_cfg: []
+## -------------
+## サービスの稼働状況のフィルター変数
+## -------------
+report_service:
+  ## サービスの取得元
+  filter_sources:
+    - systemd
+  ## 稼働中を表すステート
+  filter_running_states:
+    - running
+  ## 除外するステータス
+  reject_statuses:
+    - static
+    - unknown
 
-## -------------------
-## サーバーへの接続を許可するIPアドレス
-## -------------------
-# report_allow_connect_other_host: 10.0.0.0/8
-# report_allow_connect_other_host: 172.16.0.0/12
-# report_allow_connect_other_host: 192.168.0.0/16
-# report_allow_connect_other_host: any
+## -------------
+## ディスク使用量を調査するディレクトリのリスト
+## -------------
+report_disk_usage_dirs: []
+# report_disk_usage_dirs:
+#   - /home
+#   - /var/www
+#   - /var/log
+#   - /var/spool
+
+## -------------
+## 検索対象ファイル情報のリスト
+## -------------
+report_file_searches: []
+# report_file_searches:
+#   - name: ログファイル
+#     path: /var/log
+#     size: 100M
+#     patterns:
+#       - "*.log*"
+#     excludes:
+#       - "*.gz"
+#   - name: バックアップファイル
+#     path: /backup/data
+#     age: 7d
+
+## --------------------------
+## インストールするjcのバージョン
+## --------------------------
+jc_version: latest
+
+## --------------------------
+## インストールするosv-scannerのバージョン
+## --------------------------
+osv_scanner_version: latest

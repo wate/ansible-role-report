@@ -1,0 +1,43 @@
+待受ポート情報
+====================
+
+{% if report_firewall_type %}
+ファイアウォールの状態(`{{ report_firewall_type }}`)
+----------------------------------
+
+```
+{{ report_firewall_status }}
+```
+
+{% endif %}
+TCP
+----------------------------------
+
+{% set listen_port_addresses = [] %}
+| ポート     | アドレス                            | ユーザー        |
+| ----------:| ----------------------------------- | --------------- |
+{% for listen in ansible_facts.tcp_listen | default([]) | sort(attribute="port") %}
+{% set listen_port_address = listen.port | string + listen.address %}
+{% if listen_port_address not in listen_port_addresses %}
+| {{ "%10s" | format(listen.port) }} | {{ "%-35s" | format('`' + listen.address +  '`') }} | {{ "%-15s" | format('`' + listen.user + '`') }} |
+{% set _  = listen_port_addresses.append(listen_port_address) %}
+{% endif %}
+{% endfor %}
+
+UDP
+----------------------------------
+
+{% if ansible_facts.udp_listen | length > 0 %}
+{% set listen_port_addresses = [] %}
+| ポート     | アドレス                            | ユーザー        |
+| ----------:| ----------------------------------- | --------------- |
+{% for listen in ansible_facts.udp_listen | sort(attribute="port") %}
+{% set listen_port_address = listen.port | string + listen.address %}
+{% if listen_port_address not in listen_port_addresses %}
+| {{ "%10s" | format(listen.port) }} | {{ "%-35s" | format('`' + listen.address + '`') }} | {{ "%-15s" | format('`' + listen.user + '`') }} |
+{% set _ = listen_port_addresses.append(listen_port_address) %}
+{% endif %}
+{% endfor %}
+{% else %}
+待受ポートはありません
+{% endif %}

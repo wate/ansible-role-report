@@ -1,0 +1,90 @@
+{{ inventory_hostname }} サーバー情報
+====================
+
+{% if report_platform is defined -%}
+プラットフォーム
+----------------------------------
+
+{{ report_platform }}
+
+{% endif %}
+{% if report_repository_info is defined -%}
+リポジトリ情報
+----------------------------------
+
+{{ report_repository_info }}
+
+{% endif %}
+ホスト情報
+----------------------------------
+
+### ホスト名
+
+{{ ansible_facts.hostname }}
+
+### FQDN
+
+{{ ansible_facts.fqdn }}
+
+OS情報
+----------------------------------
+
+### ディストリビューション
+
+{{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}
+
+### アーキテクチャ
+
+{{ ansible_facts.architecture }}
+
+スペック
+----------------------------------
+
+### CPU
+
+{{ ansible_facts.processor_vcpus }}
+
+### メモリ
+
+* 空き：{{ ansible_facts.memfree_mb }} MB
+* 合計：{{ ansible_facts.memtotal_mb }} MB
+
+### スワップ
+
+* 空き：{{ ansible_facts.swapfree_mb }} MB
+* 合計：{{ ansible_facts.swaptotal_mb }} MB
+
+### ディスク
+
+| マウントポイント          | 使用量   | サイズ   | 使用率   | デバイス                       |
+| ------------------------- | --------:| --------:| --------:| ------------------------------ |
+{% for mnt in ansible_facts.mounts -%}
+{% set disk_used = ((mnt.size_total - mnt.size_available) / 1024 / 1024 / 1024) | round(1) | string -%}
+{% set disk_total = (mnt.size_total / 1024 / 1024 / 1024) | round | string -%}
+{% set used_rate = ((mnt.size_total - mnt.size_available) / mnt.size_total * 100) | round(1) | string -%}
+| {{ "%-25s" | format(mnt.mount) }} | {{ "%8s" | format(disk_used + ' GB') }} | {{ "%8s" | format(disk_total + ' GB') }} | {{ "%8s" | format(used_rate + ' %') }} | {{ "%-30s"| format('`' + mnt.device + '`') }} |
+{% endfor %}
+
+IPアドレス一覧
+----------------------------------
+
+### IPv4
+
+{% for ip_address in ansible_facts.all_ipv4_addresses -%}
+* {{ (ip_address == ansible_facts.default_ipv4.address) | ternary('**' + ip_address + '**', ip_address) }}
+{% endfor %}
+
+### IPv6
+
+{% for ip_address in ansible_facts.all_ipv6_addresses -%}
+* {{ (ip_address == ansible_facts.default_ipv6.address | default('')) | ternary('**' + ip_address + '**', ip_address) }}
+{% endfor %}
+
+稼働中のサービス
+----------------------------------
+
+| サービス名                          | 有効 / 無効 | 取得元   |
+| ----------------------------------- | ----------- | -------- |
+{% for service in running_services -%}
+| {{ "%-35s" | format(service.value.name) }} | {{ "%-11s" | format(service.value.status) }} | {{"%-8s" | format(service.value.source) }} |
+{% endfor %}

@@ -1,0 +1,10 @@
+パッケージ情報
+====================
+
+| パッケージ名                                       | バージョン                                         |
+| -------------------------------------------------- | -------------------------------------------------- |
+{% for package_name, package_infomations in ansible_facts.packages.items() %}
+{% for package_infomation in package_infomations %}
+| {{ "%-50s" | format(package_name) }} | {{ "%-50s" | format(package_infomation.version) }} |
+{% endfor %}
+{% endfor %}

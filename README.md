@@ -1,33 +1,59 @@
 report
 =================
 
-A brief description of the role goes here.
+Generate server reports
 
 OS Platform
 -----------------
 
-Requirements
------------------
+### Debian
 
-Ansible自体やロールでカバーできない前提条件があれば、ここに記載します。
-例えば、ロールがEC2モジュールを使用する場合、botoパッケージが必要であることをこのセクションに記載するのが良いでしょう。
+- trixie
+- bookworm
 
 Role Variables
------------------
+--------------
 
-`defaults/main.yml`、`vars/main.yml`にある変数、ロールのパラメータで設定できる/設定すべき変数を含め、このロールで設定可能な変数の説明をここに記述します。
-他のロールおよび/またはグローバルスコープから読み込まれる変数(hostvars、group varsなど)もここに記載すべきです。
+### [defaults/main.yml](defaults/main.yml)
 
-Dependencies
------------------
+設定方法の詳細については[defaults/main.yml](defaults/main.yml)のサンプルコードなどを参照してください。
 
-[Galaxy]でホストされている他のロールのリストと、他のロールに設定する必要があるパラメータ、
-または他のロールから使用される変数に関する詳細は、ここに記述します。
+#### `report_dir`
 
-[Galaxy]: https://galaxy.ansible.com/ui/
+レポートの出力先ディレクトリ  
+レポートはコントロールノード側に作成されます  
+※このディレクトリ内に各ホスト毎のディレクトリを作成しレポートを出力します
+
+#### `report_service`
+
+サービスの稼働状況のフィルター変数
+
+#### `report_disk_usage_dirs`
+
+ディスク使用量を調査するディレクトリのリスト
+
+#### `report_file_searches`
+
+検索対象ファイル情報のリスト
+
+#### `jc_version`
+
+インストールするjcのバージョン
+
+#### `osv_scanner_version`
+
+インストールするosv-scannerのバージョン
+
+### [vars/main.yml](vars/main.yml)
+
+設定値については[vars/main.yml](vars/main.yml)を参照してください。
+
+#### `report_jc_repo`
+
+#### `report_osv_scanner_repo`
 
 Example Playbook
------------------
+--------------
 
 ```yaml
 - hosts: servers
@@ -36,6 +62,6 @@ Example Playbook
 ```
 
 License
------------------
+--------------
 
 Apache License 2.0

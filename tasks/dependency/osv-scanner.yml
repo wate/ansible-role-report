@@ -1,0 +1,30 @@
+# code: language=ansible
+---
+- name: Set Install version variable
+  when: osv_scanner_version == 'latest'
+  block:
+    - name: Get latest version
+      ansible.builtin.include_tasks:
+        file: common/get_latest_version.yml
+      vars:
+        github_repo: "{{ report_osv_scanner_repo }}"
+        target_name: osv-scanner
+    - name: Set package version
+      ansible.builtin.set_fact:
+        osv_scanner_version: "{{ latest_version }}"
+- name: Set download file variable
+  ansible.builtin.set_fact:
+    osv_scanner_arch_type: "{{ arch_type_maps[ansible_facts['architecture']] }}"
+  vars:
+    arch_type_maps:
+      x86_64: amd64
+      aarch64: arm64
+- name: Set asset file name
+  ansible.builtin.set_fact:
+    osv_scanner_asset_file: osv-scanner_{{ ansible_facts['system'] | lower }}_{{ osv_scanner_arch_type }}
+- name: Install osv-scanner
+  ansible.builtin.get_url:
+    url: https://github.com/{{ report_osv_scanner_repo }}/releases/download/{{ osv_scanner_version }}/{{ osv_scanner_asset_file }}
+    dest: /usr/local/bin/osv-scanner
+    checksum: sha256:https://github.com/{{ report_osv_scanner_repo }}/releases/download/{{ osv_scanner_version }}/osv-scanner_SHA256SUMS
+    mode: "0755"
