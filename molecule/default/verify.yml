@@ -106,3 +106,42 @@
     #   ansible.builtin.assert:
     #     that:
     #       - 123456 in listen_tcp_posts
+    ## レポート生成のテスト
+    - name: Test report generation
+      delegate_to: localhost
+      become: false
+      block:
+        - name: Check report directory exists
+          ansible.builtin.stat:
+            path: "{{ report_dir }}/{{ inventory_hostname }}"
+          register: report_dir_result
+        - name: Assert report directory exists
+          ansible.builtin.assert:
+            that:
+              - report_dir_result.stat.exists
+              - report_dir_result.stat.isdir
+            fail_msg: "Report directory does not exist"
+            success_msg: "Report directory exists"
+        - name: Check report files exist
+          ansible.builtin.stat:
+            path: "{{ report_dir }}/{{ inventory_hostname }}/{{ item }}"
+          loop:
+            - basic.md
+            - package.md
+            - port.md
+            - disk.md
+            - traffic.md
+            - user_group.md
+            - file.md
+            - vulnerability.md
+          register: report_files_result
+        - name: Assert all report files exist
+          ansible.builtin.assert:
+            that:
+              - item.stat.exists
+              - item.stat.isreg
+            fail_msg: "Report file {{ item.item }} does not exist"
+            success_msg: "Report file {{ item.item }} exists"
+          loop: "{{ report_files_result.results }}"
+          loop_control:
+            label: "{{ item.item }}"

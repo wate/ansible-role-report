@@ -58,3 +58,7 @@
   ansible.builtin.import_tasks:
     file: file.yml
   tags: role_report_file
+- name: Import vulnerability report task
+  ansible.builtin.import_tasks:
+    file: vulnerability.yml
+  tags: role_report_vulnerability

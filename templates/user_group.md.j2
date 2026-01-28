@@ -1,2 +1,20 @@
-User and Group
+ユーザーおよびグループ情報
 ====================
+
+ユーザー情報
+----------------------------------
+
+| ユーザー             | ホーム                         | ログインシェル                 | コメント                                 |
+| -------------------- | ------------------------------ | ------------------------------ |  --------------------------------------- |
+{% for registerd_user in report_registered_users -%}
+| {{ "%-20s" | format('`' + registerd_user.username + '`') }} | {{ "%-30s" | format('`' + registerd_user.home + '`') }} | {{ "%-30s" | format('`' + registerd_user.shell + '`') }} | {{ "%-40s" | format(registerd_user.comment) | truncate(40, True) }} |
+{% endfor %}
+
+グループ情報
+----------------------------------
+
+| グループ             | メンバー                                                                         |
+| -------------------- | -------------------------------------------------------------------------------- |
+{% for registerd_group in report_registered_groups -%}
+| {{ "%-20s" | format('`' + registerd_group.group_name + '`') }} | {{ "%-80s" | format('`' + registerd_group.members | join('` / `') + '`' if registerd_group.members | length > 0 else '')  }} |
+{% endfor %}

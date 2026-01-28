@@ -1,3 +1,29 @@
 # code: language=ansible
 ---
-
+- name: Get registered user information
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      cat /etc/passwd | jc --passwd
+    executable: /bin/bash
+  changed_when: false
+  register: report_registered_user_result
+- name: Get registered group information
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      cat /etc/group | jc --group
+    executable: /bin/bash
+  changed_when: false
+  register: report_registered_group_result
+- name: Set user and group results variable
+  ansible.builtin.set_fact:
+    report_registered_users: "{{ report_registered_user_result.stdout | from_json }}"
+    report_registered_groups: "{{ report_registered_group_result.stdout | from_json }}"
+- name: Generate user and group report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: user_group.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/user_group.md"
+    mode: "0644"
