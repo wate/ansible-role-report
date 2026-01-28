@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/ansible
 
 ### Ansible ###
@@ -15,6 +14,7 @@
 
 ### Molecule ###
 .env.yml
+molecule-report/
 
 ### VisualStudioCode ###
 /.vscode/

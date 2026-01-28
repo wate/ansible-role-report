@@ -7,6 +7,13 @@
 report_dir: ./report
 
 ## -------------
+## プラットフォーム情報（オプション）
+## レポートの上部に表示されます
+## -------------
+# report_platform: 本番環境
+# report_repository_info: https://github.com/example/repo
+
+## -------------
 ## サービスの稼働状況のフィルター変数
 ## -------------
 report_service:

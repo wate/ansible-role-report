@@ -1,6 +1,6 @@
 ---
-## テスト用のレポート出力先
-report_dir: /tmp/molecule-report
+## テスト用のレポート出力先（ワークスペース内）
+report_dir: ./molecule-report
 
 ## ディスク使用量を調査するディレクトリ
 report_disk_usage_dirs:

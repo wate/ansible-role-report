@@ -33,7 +33,17 @@
 | サイズ          | 更新日時            | パス                                                                             |
 | ---------------:| ------------------- |--------------------------------------------------------------------------------- |
 {% for find_file in find_files_result.files -%}
-| {{ "%15s" | format(find_file.size | human_readable) }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% set file_size_kb = find_file.size / 1024 %}
+{% if file_size_kb >= 1048576 %}
+{% set file_size_gb = (file_size_kb / 1048576) | round(2) %}
+| {{ "%15s" | format(file_size_gb | string + ' GB') }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% elif file_size_kb >= 1024 %}
+{% set file_size_mb = (file_size_kb / 1024) | round(2) %}
+| {{ "%15s" | format(file_size_mb | string + ' MB') }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% else %}
+{% set file_size_kb_display = file_size_kb | round(2) %}
+| {{ "%15s" | format(file_size_kb_display | string + ' KB') }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% endif %}
 {% endfor %}
 {% else %}
 該当するファイルは存在しません

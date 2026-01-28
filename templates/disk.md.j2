@@ -7,11 +7,29 @@
 {% set disk_usage_total = report_disk_usage_dirs_results[target_dir] | first %}
 {% set disk_usage_paths = report_disk_usage_dirs_results[target_dir][1:] %}
 
-合計： **{{ disk_usage_total.size | human_readable }}**
+{% set total_kb = disk_usage_total.size / 1024 %}
+{% if total_kb >= 1048576 %}
+{% set total_display = ((total_kb / 1048576) | round(2)) | string + ' GB' %}
+{% elif total_kb >= 1024 %}
+{% set total_display = ((total_kb / 1024) | round(2)) | string + ' MB' %}
+{% else %}
+{% set total_kb_display = total_kb | round(2) %}
+{% set total_display = total_kb_display | string + ' KB' %}
+{% endif %}
+合計： **{{ total_display }}**
 
 | 使用量          | パス                                                         |
 | ---------------:| ------------------------------------------------------------ |
 {% for disk_usage_path in disk_usage_paths -%}
-| {{ "%15s" | format(disk_usage_path.size | human_readable) }} | {{ "%-60s" | format('`' + disk_usage_path.name + '`') }} |
+{% set usage_kb = disk_usage_path.size / 1024 %}
+{% if usage_kb >= 1048576 %}
+{% set usage_display = ((usage_kb / 1048576) | round(2)) | string + ' GB' %}
+{% elif usage_kb >= 1024 %}
+{% set usage_display = ((usage_kb / 1024) | round(2)) | string + ' MB' %}
+{% else %}
+{% set usage_kb_display = usage_kb | round(2) %}
+{% set usage_display = usage_kb_display | string + ' KB' %}
+{% endif %}
+| {{ "%15s" | format(usage_display) }} | {{ "%-60s" | format('`' + disk_usage_path.name + '`') }} |
 {% endfor %}
 {% endfor %}

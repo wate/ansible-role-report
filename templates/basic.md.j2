@@ -1,6 +1,20 @@
 {{ inventory_hostname }} サーバー情報
 ====================
 
+{% if report_platform is defined -%}
+プラットフォーム
+----------------------------------
+
+{{ report_platform }}
+
+{% endif %}
+{% if report_repository_info is defined -%}
+リポジトリ情報
+----------------------------------
+
+{{ report_repository_info }}
+
+{% endif %}
 ホスト情報
 ----------------------------------
 
