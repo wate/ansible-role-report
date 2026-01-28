@@ -1,2 +1,41 @@
-File
+ファイルレポート
 ====================
+{% for find_files_result in report_file_searches_results %}
+
+{{ find_files_result.target.name }}
+----------------------------------
+
+* 対象ディレクトリ：`{{ find_files_result.target.path }}`
+{% if find_files_result.target.patterns is defined %}
+* ファイル名パターン：
+{% for find_files_pattern in find_files_result.target.patterns %}
+    * `{{ find_files_pattern }}`
+{% endfor %}
+{% endif %}
+{% if find_files_result.target.excludes is defined %}
+* ファイル名除外パターン：
+{% for exclude_files_pattern in find_files_result.target.excludes %}
+    * `{{ exclude_files_pattern }}`
+{% endfor %}
+{% endif %}
+{% if find_files_result.target.size is defined %}
+* サイズ：`{{ find_files_result.target.size }}`
+{% endif %}
+{% if find_files_result.target.age is defined %}
+* 経過期間：`{{ find_files_result.target.age }}`
+{% endif %}
+
+### 結果
+
+{% if find_files_result.files %}
+合計：{{ find_files_result.files | map(attribute='size') | sum | human_readable }}
+
+| サイズ          | 更新日時            | パス                                                                             |
+| ---------------:| ------------------- |--------------------------------------------------------------------------------- |
+{% for find_file in find_files_result.files -%}
+| {{ "%15s" | format(find_file.size | human_readable) }} | {{ '%Y/%m/%d %H:%M:%S' | strftime(find_file.mtime) }} | {{ "%-80s" | format('`' + find_file.path | regex_replace('^' + find_files_result.target.path + '/', '') + '`') }} |
+{% endfor %}
+{% else %}
+該当するファイルは存在しません
+{% endif %}
+{% endfor %}

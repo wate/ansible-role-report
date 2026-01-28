@@ -1,2 +1,17 @@
-Disk
+ディスク使用量
 ====================
+{% for target_dir in report_disk_usage_dirs %}
+
+`{{ target_dir }}`
+----------------------------------
+{% set disk_usage_total = report_disk_usage_dirs_results[target_dir] | first %}
+{% set disk_usage_paths = report_disk_usage_dirs_results[target_dir][1:] %}
+
+合計： **{{ disk_usage_total.size | human_readable }}**
+
+| 使用量          | パス                                                         |
+| ---------------:| ------------------------------------------------------------ |
+{% for disk_usage_path in disk_usage_paths -%}
+| {{ "%15s" | format(disk_usage_path.size | human_readable) }} | {{ "%-60s" | format('`' + disk_usage_path.name + '`') }} |
+{% endfor %}
+{% endfor %}

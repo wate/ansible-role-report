@@ -1,2 +1,33 @@
 # code: language=ansible
 ---
+- name: Get listen ports facts
+  community.general.listen_ports_facts:
+    command: ss
+  become: true
+- name: Get service facts
+  ansible.builtin.service_facts:
+  when: ansible_facts.services is undefined
+- name: Initialize firewall type and status variables
+  ansible.builtin.set_fact:
+    report_firewall_type: ""
+    report_firewall_status: ""
+- name: Get firewall status (firewalld)
+  ansible.builtin.import_tasks:
+    file: port/firewalld.yml
+  when:
+    - ansible_facts['services']['firewalld.service'] is defined
+    - ansible_facts['services']['firewalld.service']['state'] == 'running'
+- name: Get firewall status (ufw)
+  ansible.builtin.import_tasks:
+    file: port/ufw.yml
+  when: |
+    (ansible_facts['services']['ufw'] is defined and ansible_facts['services']['ufw']['state'] == 'running')
+    or
+    (ansible_facts['services']['ufw.service'] is defined and ansible_facts['services']['ufw.service']['state'] == 'running')
+- name: Generate listen port report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: port.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/port.md"
+    mode: "0644"

@@ -19,6 +19,14 @@
     - variable_file is not none
     - variable_file | length > 0
   tags: role_report_include_vars
+- name: Import prepare task
+  ansible.builtin.import_tasks:
+    file: prepare.yml
+  tags: role_report_prepare
+- name: Import dependency task
+  ansible.builtin.import_tasks:
+    file: dependency.yml
+  tags: role_report_dependency
 - name: Import basic report task
   ansible.builtin.import_tasks:
     file: basic.yml

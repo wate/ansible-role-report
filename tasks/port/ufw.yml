@@ -1,0 +1,11 @@
+# code: language=ansible
+---
+- name: Get firewall status
+  ansible.builtin.command:
+    cmd: ufw status verbose
+  changed_when: false
+  register: firewall_status_result
+- name: Set firewall type and status variable
+  ansible.builtin.set_fact:
+    report_firewall_type: ufw
+    report_firewall_status: "{{ firewall_status_result.stdout | trim }}"

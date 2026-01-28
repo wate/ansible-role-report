@@ -1,0 +1,30 @@
+# code: language=ansible
+---
+- name: Get service facts
+  ansible.builtin.service_facts:
+- name: Set all services variable
+  ansible.builtin.set_fact:
+    all_services: "{{ ansible_facts['services'] | dict2items | list }}"
+- name: Filter services by source
+  ansible.builtin.set_fact:
+    all_services: "{{ all_services | selectattr('value.source', 'in', filter_values) | list }}"
+  vars:
+    filter_values: "{{ report_service.filter_sources }}"
+  when: report_service.filter_sources | default([]) | length > 0
+- name: Set running services variable
+  ansible.builtin.set_fact:
+    all_running_services: "{{ all_services | selectattr('value.state', 'in', filter_values) | list }}"
+  vars:
+    filter_values: "{{ report_service.filter_running_states }}"
+- name: Filter services by status
+  ansible.builtin.set_fact:
+    running_services: "{{ all_running_services | rejectattr('value.status', 'in', filter_values) | list }}"
+  vars:
+    filter_values: "{{ report_service.reject_statuses }}"
+- name: Generate basic information report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: basic.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/basic.md"
+    mode: "0644"

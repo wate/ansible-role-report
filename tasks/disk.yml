@@ -1,3 +1,22 @@
 # code: language=ansible
 ---
-
+- name: Get disk usage
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      du -b -d 1 {{ item }} | sort -r -n | jc --du
+    executable: /bin/bash
+  loop: "{{ report_disk_usage_dirs }}"
+  changed_when: false
+  register: report_du_result
+  become: true
+- name: Set disk usage results variable
+  ansible.builtin.set_fact:
+    report_disk_usage_dirs_results: "{{ dict(report_disk_usage_dirs | zip(report_du_result.results | map(attribute='stdout') | map('from_json'))) }}"
+- name: Generate disk usage report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: disk.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/disk.md"
+    mode: "0644"

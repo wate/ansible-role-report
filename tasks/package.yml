@@ -1,3 +1,11 @@
 # code: language=ansible
 ---
-
+- name: Get package facts
+  ansible.builtin.package_facts:
+- name: Generate package report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: package.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/package.md"
+    mode: "0644"

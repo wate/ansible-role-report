@@ -24,6 +24,26 @@
         registered_groups: "{{ ansible_facts.getent_group }}"
         listen_tcp_posts: "{{ ansible_facts.tcp_listen | map(attribute='port') | unique | sort | list }}"
         listen_udp_posts: "{{ ansible_facts.udp_listen | map(attribute='port') | unique | sort | list }}"
+    ## 依存パッケージのテスト
+    - name: Test dependency packages
+      block:
+        - name: Assert jc package is installed
+          ansible.builtin.assert:
+            that:
+              - ansible_facts.packages['jc'] is defined
+            fail_msg: "jc package is not installed"
+            success_msg: "jc package is installed"
+        - name: Check osv-scanner binary exists
+          ansible.builtin.stat:
+            path: /usr/local/bin/osv-scanner
+          register: osv_scanner_result
+        - name: Assert osv-scanner is installed
+          ansible.builtin.assert:
+            that:
+              - osv_scanner_result.stat.exists
+              - osv_scanner_result.stat.executable
+            fail_msg: "osv-scanner is not installed or not executable"
+            success_msg: "osv-scanner is installed and executable"
     ## リポジトリのテスト
     # - name: Test repository
     #   block:

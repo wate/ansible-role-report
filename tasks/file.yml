@@ -1,3 +1,27 @@
 # code: language=ansible
 ---
+- name: Find files
+  ansible.builtin.find:
+    paths: "{{ target.path }}"
+    age: "{{ target.age | default(omit) }}"
+    size: "{{ target.size | default(omit) }}"
+    patterns: "{{ target.patterns | default(omit) }}"
+    excludes: "{{ target.excludes | default(omit) }}"
+    use_regex: "{{ target.use_regex | default(false) }}"
+    recurse: "{{ target.recurse | default(true) }}"
+  loop: "{{ report_file_searches }}"
+  loop_control:
+    label: "{{ target.name }}"
+    loop_var: target
+  register: report_find_file_result
+- name: Set find files results variable
+  ansible.builtin.set_fact:
+    report_file_searches_results: "{{ report_find_file_result.results | default([]) }}"
+- name: Generate file report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: file.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/file.md"
+    mode: "0644"
 

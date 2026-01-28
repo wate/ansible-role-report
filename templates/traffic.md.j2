@@ -1,2 +1,46 @@
-Traffic
+トラフィック情報
 ====================
+
+日別
+----------------------------------
+{% if report_traffic_result.interfaces | length > 0 -%}
+{% for interface in report_traffic_result.interfaces %}
+
+### `{{ interface.name }}`
+
+| 年月       | 受信(rx)     | 送信(tx)     | 合計              |
+| ---------- | ------------:| ------------:| -----------------:|
+{% for daily_traffic in interface.traffic.day | reverse %}
+{% set month = daily_traffic.date.year | string + '/' + daily_traffic.date.month | string + '/' + daily_traffic.date.day | string -%}
+{% set rx = daily_traffic.rx | human_readable -%}
+{% set tx = daily_traffic.tx | human_readable -%}
+{% set total = (daily_traffic.rx + daily_traffic.tx) | human_readable -%}
+| {{ "%-10s" | format(month) }} | {{ "%12s" | format(rx) }} | {{ "%12s" | format(tx) }} | {{ "%17s" | format(total) }} |
+{% endfor %}
+{% endfor %}
+{% else %}
+
+トラフィック情報は取得できませんでした
+{% endif %}
+
+月別
+----------------------------------
+{% if report_traffic_result.interfaces | length > 0 -%}
+{% for interface in report_traffic_result.interfaces %}
+
+### `{{ interface.name }}`
+
+| 年月       | 受信(rx)     | 送信(tx)     | 合計              |
+| ---------- | ------------:| ------------:| -----------------:|
+{% for daily_traffic in interface.traffic.month | reverse %}
+{% set month = daily_traffic.date.year | string + '/' + daily_traffic.date.month | string -%}
+{% set rx = daily_traffic.rx | human_readable -%}
+{% set tx = daily_traffic.tx | human_readable -%}
+{% set total = (daily_traffic.rx + daily_traffic.tx) | human_readable -%}
+| {{ "%-10s" | format(month) }} | {{ "%12s" | format(rx) }} | {{ "%12s" | format(tx) }} | {{ "%17s" | format(total) }} |
+{% endfor %}
+{% endfor %}
+{% else %}
+
+トラフィック情報は取得できませんでした
+{% endif %}

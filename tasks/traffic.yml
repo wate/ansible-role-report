@@ -1,2 +1,29 @@
 # code: language=ansible
 ---
+- name: Get service facts
+  ansible.builtin.service_facts:
+  when: ansible_facts.services is undefined
+- name: Initialize traffic result variable
+  ansible.builtin.set_fact:
+    report_traffic_result:
+      interfaces: []
+- name: Get traffic information and generate report
+  when:
+    - ansible_facts['services']['vnstat.service'] is defined
+    - ansible_facts['services']['vnstat.service']['state'] == 'running'
+  block:
+    - name: Get traffic information
+      ansible.builtin.command:
+        cmd: vnstat --json
+      changed_when: false
+      register: vnstat_result
+    - name: Set traffic result variable
+      ansible.builtin.set_fact:
+        report_traffic_result: "{{ vnstat_result.stdout | from_json }}"
+- name: Generate traffic report
+  delegate_to: localhost
+  become: false
+  ansible.builtin.template:
+    src: traffic.md.j2
+    dest: "{{ report_dir }}/{{ inventory_hostname }}/traffic.md"
+    mode: "0644"
