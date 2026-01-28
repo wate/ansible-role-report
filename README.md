@@ -18,29 +18,39 @@ Role Variables
 
 設定方法の詳細については[defaults/main.yml](defaults/main.yml)のサンプルコードなどを参照してください。
 
-#### `report_version`
+#### `report_dir`
 
-インストールするバージョン
+レポートの出力先ディレクトリ  
+レポートはコントロールノード側に作成されます  
+※このディレクトリ内に各ホスト毎のディレクトリを作成しレポートを出力します
 
-#### `report_packages`
+#### `report_service`
 
-インストールするパッケージ
+サービスの稼働状況のフィルター変数
 
-#### `report_cfg`
+#### `report_disk_usage_dirs`
 
-reportの設定
+ディスク使用量を調査するディレクトリのリスト
+
+#### `report_file_searches`
+
+検索対象ファイル情報のリスト
+
+#### `jc_version`
+
+インストールするjcのバージョン
+
+#### `osv_scanner_version`
+
+インストールするosv-scannerのバージョン
 
 ### [vars/main.yml](vars/main.yml)
 
 設定値については[vars/main.yml](vars/main.yml)を参照してください。
 
-#### `report_dependency_packages`
+#### `report_jc_repo`
 
-#### `report_root`
-
-#### `report_user`
-
-#### `report_group`
+#### `report_osv_scanner_repo`
 
 Example Playbook
 --------------
