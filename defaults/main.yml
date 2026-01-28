@@ -46,28 +46,22 @@ report_service:
 ## -------------
 ## ディスク使用量を調査するディレクトリのリスト
 ## -------------
-report_disk_usage_dirs: []
-# report_disk_usage_dirs:
-#   - /home
-#   - /var/www
-#   - /var/log
-#   - /var/spool
+report_disk_usage_dirs:
+  - /home
+  - /var/log
+  - /var/spool
+  - /var/tmp
 
 ## -------------
 ## 検索対象ファイル情報のリスト
 ## -------------
-report_file_searches: []
-# report_file_searches:
-#   - name: ログファイル
-#     path: /var/log
-#     size: 100M
-#     patterns:
-#       - "*.log*"
-#     excludes:
-#       - "*.gz"
-#   - name: バックアップファイル
-#     path: /backup/data
-#     age: 7d
+report_file_searches:
+  - name: ログファイル
+    path: /var/log
+    patterns:
+      - "*.log*"
+    excludes:
+      - "*.gz"
 
 ## --------------------------
 ## インストールするjcのバージョン
