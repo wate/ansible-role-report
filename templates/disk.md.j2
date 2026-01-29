@@ -1,3 +1,8 @@
+{% if report_meta and report_meta.get('disk') -%}
+---
+{{ report_meta.get('disk') | to_nice_yaml(indent=2) | trim }}
+---
+{% endif %}
 ディスク使用量
 ====================
 {% for target_dir in report_disk_usage_dirs %}

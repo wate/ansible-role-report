@@ -1,4 +1,9 @@
-待受ポート情報
+{% if report_meta and report_meta.get('port') -%}
+---
+{{ report_meta.get('port') | to_nice_yaml(indent=2) | trim }}
+---
+{% endif %}
+ポート情報
 ====================
 
 {% if report_firewall_type %}

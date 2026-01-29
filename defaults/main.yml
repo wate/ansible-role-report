@@ -7,15 +7,61 @@
 report_dir: ./report
 
 ## -------------
-## プラットフォーム情報（オプション）
-## レポートの上部に表示されます
+## プラットフォーム情報(オプション)
+## ※サーバー基本情報レポートの上部に表示されます
 ## -------------
+report_platform:
 # report_platform: 本番環境
-# report_repository_info: https://github.com/example/repo
+
+## -------------
+## リポジトリ情報(オプション)
+## ※サーバー基本情報レポートの上部に表示されます
+## -------------
+report_repository:
+# report_repository: https://github.com/example/repo
+
+## -------------
+## メタ情報(オプション)
+## ※レポートの上部にYAMLフロントマターとして埋め込まれます
+## -------------
+report_meta: {}
+# report_meta:
+#   basic:
+#     url: http://example.com/
+#     project: infra
+#     name: サーバー情報
+#   package:
+#     url: http://example.com/
+#     project: infra
+#     name: パッケージ情報
+#   disk:
+#     url: http://example.com/
+#     project: infra
+#     name: ディスク使用量
+#   port:
+#     url: http://example.com/
+#     project: infra
+#     name: 待ち受けポート情報
+#   file:
+#     url: http://example.com/
+#     project: infra
+#     name: ファイルレポート
+#   traffic:
+#     url: http://example.com/
+#     project: infra
+#     name: トラフィック情報
+#   user_group:
+#     url: http://example.com/
+#     project: infra
+#     name: ユーザー/グループ情報
+#   vulnerability:
+#     url: http://example.com/
+#     project: infra
+#     name: パッケージ脆弱性情報
 
 ## -------------
 ## 脆弱性スキャン設定
-## osv-scannerの設定ファイル内容（TOMLフォーマット）
+## osv-scannerの設定ファイル内容(TOMLフォーマット)
 ## 詳細: https://google.github.io/osv-scanner/configuration/
 ## 例: IgnoredVulns, PackageOverridesなどを設定可能
 ## -------------

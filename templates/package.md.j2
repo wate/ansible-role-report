@@ -1,3 +1,8 @@
+{% if report_meta and report_meta.get('package') -%}
+---
+{{ report_meta.get('package') | to_nice_yaml(indent=2) | trim }}
+---
+{% endif %}
 パッケージ情報
 ====================
 
