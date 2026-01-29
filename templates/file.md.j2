@@ -1,3 +1,8 @@
+{% if report_meta and report_meta.get('file') -%}
+---
+{{ report_meta.get('file') | to_nice_yaml(indent=2) | trim }}
+---
+{% endif %}
 ファイルレポート
 ====================
 {% for find_files_result in report_file_searches_results %}

@@ -1,18 +1,23 @@
+{% if report_meta and report_meta.basic -%}
+---
+{{ report_meta.basic | to_nice_yaml(indent=2) | trim }}
+---
+{% endif %}
 {{ inventory_hostname }} サーバー情報
 ====================
 
-{% if report_platform is defined -%}
+{% if report_platform -%}
 プラットフォーム
 ----------------------------------
 
 {{ report_platform }}
 
 {% endif %}
-{% if report_repository_info is defined -%}
+{% if report_repository -%}
 リポジトリ情報
 ----------------------------------
 
-{{ report_repository_info }}
+{{ report_repository }}
 
 {% endif %}
 ホスト情報

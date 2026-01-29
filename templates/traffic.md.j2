@@ -1,3 +1,8 @@
+{% if report_meta and report_meta.get('traffic') -%}
+---
+{{ report_meta.get('traffic') | to_nice_yaml(indent=2) | trim }}
+---
+{% endif %}
 トラフィック情報
 ====================
 

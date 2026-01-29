@@ -16,8 +16,14 @@ tasks:
     cmds:
       - molecule test
       - task: notify
+  option_vars:
+    desc: Run Molecule tests for option_vars scenario
+    cmds:
+      - molecule test -s option_vars
+      - task: notify
   all:
     desc: Run Molecule tests for all scenarios (sequential)
     cmds:
       - task: default
+      - task: option_vars
       - task: notify:all
