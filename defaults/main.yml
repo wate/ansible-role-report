@@ -75,6 +75,16 @@ report_meta: {}
 #   ignore = true
 
 ## -------------
+## osv-scannerの出力結果を保存するかどうか
+## -------------
+report_osv_scanner_save_output: false
+
+## -------------
+## osv-scannerの出力ファイル名
+## -------------
+report_osv_scanner_output_filename: osv-scanner-result.json
+
+## -------------
 ## サービスの稼働状況のフィルター変数
 ## -------------
 report_service:
