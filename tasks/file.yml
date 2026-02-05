@@ -24,4 +24,3 @@
     src: file.md.j2
     dest: "{{ report_dir }}/{{ inventory_hostname }}/file.md"
     mode: "0644"
-

@@ -24,6 +24,29 @@ Role Variables
 レポートはコントロールノード側に作成されます  
 ※このディレクトリ内に各ホスト毎のディレクトリを作成しレポートを出力します
 
+#### `report_platform`
+
+プラットフォーム情報(オプション)  
+※サーバー基本情報レポートの上部に表示されます
+
+#### `report_repository`
+
+リポジトリ情報(オプション)  
+※サーバー基本情報レポートの上部に表示されます
+
+#### `report_meta`
+
+メタ情報(オプション)  
+※レポートの上部にYAMLフロントマターとして埋め込まれます
+
+#### `report_osv_scanner_save_output`
+
+osv-scannerの出力結果を保存するかどうか
+
+#### `report_osv_scanner_output_filename`
+
+osv-scannerの出力ファイル名
+
 #### `report_service`
 
 サービスの稼働状況のフィルター変数
