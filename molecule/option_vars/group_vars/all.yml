@@ -1,0 +1,59 @@
+---
+## テスト用のレポート出力先（ワークスペース内）
+report_dir: ./molecule-report
+
+## ディスク使用量を調査するディレクトリ
+report_disk_usage_dirs:
+  - /etc
+  - /var/log
+
+## プラットフォーム情報
+report_platform: 本番環境
+
+## リポジトリ情報
+report_repository: https://github.com/example/repo
+
+## レポートメタ情報
+report_meta:
+  basic:
+    url: http://example.com/
+    project: infra
+    name: サーバー情報
+  package:
+    url: http://example.com/
+    project: infra
+    name: パッケージ情報
+  disk:
+    url: http://example.com/
+    project: infra
+    name: ディスク使用量
+  port:
+    url: http://example.com/
+    project: infra
+    name: 待ち受けポート情報
+  file:
+    url: http://example.com/
+    project: infra
+    name: ファイルレポート
+  traffic:
+    url: http://example.com/
+    project: infra
+    name: トラフィック情報
+  user_group:
+    url: http://example.com/
+    project: infra
+    name: ユーザー/グループ情報
+
+## 検索対象ファイル情報
+report_file_searches:
+  - name: ログファイル
+    path: /var/log
+    size: 1M
+    patterns:
+      - "*.log"
+    excludes:
+      - "*.gz"
+  - name: 設定ファイル
+    path: /etc
+    patterns:
+      - "*.conf"
