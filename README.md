@@ -60,6 +60,17 @@ SBOMのファイル名
 脆弱性レポートに含める重大度  
 trivyの`--severity`に渡します(空の場合はすべての重大度が対象)
 
+#### `report_vulnerability_ignorefile`
+
+除外する脆弱性の定義(任意)  
+空の場合は除外設定なし(既存の定義ファイルは削除されます)  
+詳細: [Filtering](https://trivy.dev/docs/latest/configuration/filtering/)
+
+#### `report_vulnerability_ignorefile_name`
+
+除外設定のファイル名  
+YAML形式の場合は`.trivyignore.yaml`を指定します(拡張子で形式が判定されます)
+
 #### `report_service`
 
 サービスの稼働状況のフィルター変数
