@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: report
+  namespace: wate
   author: yoshiaki tanaka
   description: Generate server reports
   license: Apache

@@ -51,8 +51,8 @@ provisioner:
       callback_result_format: yaml
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
-# verifier:
-#   name: ansible
+verifier:
+  name: ansible
 scenario:
   ## cleanupとside_effectはドライバにプレイブックが無いため実行しません
   create_sequence:
