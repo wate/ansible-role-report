@@ -39,13 +39,37 @@ Role Variables
 メタ情報(オプション)  
 ※レポートの上部にYAMLフロントマターとして埋め込まれます
 
-#### `report_osv_scanner_save_output`
+#### `report_sbom_dir`
 
-osv-scannerの出力結果を保存するかどうか
+SBOMの出力先ディレクトリ(サーバー上)  
+trivy rootfsで生成したCycloneDX形式のSBOMを保存します
 
-#### `report_osv_scanner_output_filename`
+#### `report_sbom_filename`
 
-osv-scannerの出力ファイル名
+SBOMのファイル名
+
+#### `report_vulnerability_enabled`
+
+脆弱性レポートを生成するかどうか  
+生成したSBOMをtrivyで検査し脆弱性レポートを出力します  
+無効の場合は既存の脆弱性レポートを削除します  
+※初回実行時は脆弱性DB(展開後約1.7GB)のダウンロードが必要です
+
+#### `report_vulnerability_severities`
+
+脆弱性レポートに含める重大度  
+trivyの`--severity`に渡します(空の場合はすべての重大度が対象)
+
+#### `report_vulnerability_ignorefile`
+
+除外する脆弱性の定義(任意)  
+空の場合は除外設定なし(既存の定義ファイルは削除されます)  
+詳細: [Filtering](https://trivy.dev/docs/latest/configuration/filtering/)
+
+#### `report_vulnerability_ignorefile_name`
+
+除外設定のファイル名  
+YAML形式の場合は`.trivyignore.yaml`を指定します(拡張子で形式が判定されます)
 
 #### `report_service`
 
@@ -63,17 +87,17 @@ osv-scannerの出力ファイル名
 
 インストールするjcのバージョン
 
-#### `osv_scanner_version`
-
-インストールするosv-scannerのバージョン
-
 ### [vars/main.yml](vars/main.yml)
 
 設定値については[vars/main.yml](vars/main.yml)を参照してください。
 
 #### `report_jc_repo`
 
-#### `report_osv_scanner_repo`
+#### `report_trivy_apt_key_url`
+
+#### `report_trivy_apt_key_download_dest`
+
+#### `report_trivy_apt_key_dest`
 
 Example Playbook
 --------------
@@ -83,6 +107,29 @@ Example Playbook
   roles:
     - role: report
 ```
+
+Test
+--------------
+
+Moleculeのシナリオは次の3つです。
+
+| シナリオ      | 内容                                                       |
+| ------------- | ---------------------------------------------------------- |
+| default       | 既定値。SBOMの生成までを検証                               |
+| option_vars   | 任意変数(メタ情報など)の反映を検証                         |
+| vulnerability | 脆弱性レポートの生成までを検証(初回は脆弱性DBの取得が発生) |
+
+`task`コマンドで実行します。
+
+- `task`: defaultシナリオ
+- `task option_vars`: option_varsシナリオ
+- `task vulnerability`: vulnerabilityシナリオ
+- `task all`: すべてのシナリオ
+
+各シナリオには`collections.yml`と`requirements.yml`を置いてあり、
+moleculeの`dependency`ステップで必要なコレクションが自動導入されます。
+
+検証の最後に、目視確認用として生成したSBOMを`molecule-report/<ホスト名>/sbom.cdx.json`へ取得します。
 
 License
 --------------

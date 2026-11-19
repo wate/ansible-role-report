@@ -22,9 +22,15 @@ tasks:
     cmds:
       - molecule test -s option_vars
       - task: notify
+  vulnerability:
+    desc: Run Molecule tests for vulnerability scenario
+    cmds:
+      - molecule test -s vulnerability
+      - task: notify
   all:
     desc: Run Molecule tests for all scenarios (sequential)
     cmds:
       - task: default
       - task: option_vars
+      - task: vulnerability
       - task: notify:all

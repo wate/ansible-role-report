@@ -1,0 +1,55 @@
+# code: language=ansible
+---
+- name: Generate SBOM with trivy (Debian)
+  when: ansible_facts['os_family'] == 'Debian'
+  block:
+    - name: Create SBOM output directory
+      ansible.builtin.file:
+        path: "{{ report_sbom_dir }}"
+        state: directory
+        mode: "0755"
+    - name: Create temporary rootfs directory
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: trivy-rootfs
+      register: report_sbom_rootfs
+    - name: Create rootfs directory layout
+      ansible.builtin.file:
+        path: "{{ report_sbom_rootfs.path }}/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - etc
+        - var/lib/dpkg
+    - name: Copy OS release files
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ report_sbom_rootfs.path }}{{ item }}"
+        remote_src: true
+        mode: "0644"
+      loop:
+        - /etc/os-release
+        - /etc/debian_version
+    - name: Copy dpkg status file
+      ansible.builtin.copy:
+        src: /var/lib/dpkg/status
+        dest: "{{ report_sbom_rootfs.path }}/var/lib/dpkg/status"
+        remote_src: true
+        mode: "0644"
+    - name: Generate SBOM with trivy
+      ansible.builtin.command:
+        cmd: >-
+          trivy rootfs
+          --scanners license
+          --format cyclonedx
+          --pkg-types os
+          --quiet
+          --output {{ report_sbom_dir }}/{{ report_sbom_filename }}
+          {{ report_sbom_rootfs.path }}
+      changed_when: false
+  always:
+    - name: Remove temporary rootfs directory
+      ansible.builtin.file:
+        path: "{{ report_sbom_rootfs.path }}"
+        state: absent
+      when: report_sbom_rootfs.path is defined
