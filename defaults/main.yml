@@ -60,29 +60,34 @@ report_meta: {}
 #     name: パッケージ脆弱性情報
 
 ## -------------
-## 脆弱性スキャン設定
-## osv-scannerの設定ファイル内容(TOMLフォーマット)
-## 詳細: https://google.github.io/osv-scanner/configuration/
-## 例: IgnoredVulns, PackageOverridesなどを設定可能
+## SBOMの出力先ディレクトリ(サーバー上)
+## trivy rootfsで生成したCycloneDX形式(v1.7)のSBOMを保存します
 ## -------------
-# report_osv_scanner_config: |
-#   [[IgnoredVulns]]
-#   id = "DEBIAN-CVE-2011-3374"
-#   reason = "No ssh servers are connected"
-#
-#   [[PackageOverrides]]
-#   name = "lib"
-#   ignore = true
+report_sbom_dir: /var/sbom
 
 ## -------------
-## osv-scannerの出力結果を保存するかどうか
+## SBOMのファイル名
 ## -------------
-report_osv_scanner_save_output: false
+report_sbom_filename: sbom.cdx.json
 
 ## -------------
-## osv-scannerの出力ファイル名
+## 脆弱性レポートを生成するかどうか
+## 生成したSBOMをtrivyで検査し脆弱性レポートを出力します
+## 無効の場合は既存の脆弱性レポートを削除します
+## ※初回実行時は脆弱性DB(展開後約1.7GB)のダウンロードが必要です
 ## -------------
-report_osv_scanner_output_filename: osv-scanner-result.json
+report_vulnerability_enabled: false
+
+## -------------
+## 脆弱性レポートに含める重大度
+## trivyの--severityに渡します(空の場合はすべての重大度が対象)
+## -------------
+report_vulnerability_severities:
+  - UNKNOWN
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
 
 ## -------------
 ## サービスの稼働状況のフィルター変数
@@ -123,8 +128,3 @@ report_file_searches:
 ## インストールするjcのバージョン
 ## --------------------------
 jc_version: latest
-
-## --------------------------
-## インストールするosv-scannerのバージョン
-## --------------------------
-osv_scanner_version: latest

@@ -54,13 +54,13 @@ provisioner:
 # verifier:
 #   name: ansible
 scenario:
+  ## cleanupとside_effectはドライバにプレイブックが無いため実行しません
   create_sequence:
     - dependency
     - create
     - prepare
   check_sequence:
     - dependency
-    - cleanup
     - destroy
     - create
     - prepare
@@ -74,18 +74,14 @@ scenario:
     - converge
   destroy_sequence:
     - dependency
-    - cleanup
     - destroy
   test_sequence:
     - dependency
-    - cleanup
     - destroy
     - syntax
     - create
     - prepare
     - converge
     # - idempotence
-    - side_effect
     - verify
-    - cleanup
     - destroy

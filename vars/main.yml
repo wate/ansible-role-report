@@ -1,3 +1,7 @@
 ---
 report_jc_repo: kellyjonbrazil/jc
-report_osv_scanner_repo: google/osv-scanner
+
+## Trivy
+report_trivy_apt_key_url: https://aquasecurity.github.io/trivy-repo/deb/public.key
+report_trivy_apt_key_download_dest: /etc/apt/keyrings/trivy.gpg.key
+report_trivy_apt_key_dest: /etc/apt/keyrings/trivy.gpg

@@ -58,6 +58,10 @@
   ansible.builtin.import_tasks:
     file: file.yml
   tags: role_report_file
+- name: Import SBOM generation task
+  ansible.builtin.import_tasks:
+    file: sbom.yml
+  tags: role_report_sbom
 - name: Import vulnerability report task
   ansible.builtin.import_tasks:
     file: vulnerability.yml

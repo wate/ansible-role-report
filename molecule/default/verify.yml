@@ -33,17 +33,39 @@
               - ansible_facts.packages['jc'] is defined
             fail_msg: "jc package is not installed"
             success_msg: "jc package is installed"
-        - name: Check osv-scanner binary exists
+        - name: Check trivy binary exists
           ansible.builtin.stat:
-            path: /usr/local/bin/osv-scanner
-          register: osv_scanner_result
-        - name: Assert osv-scanner is installed
+            path: /usr/bin/trivy
+          register: trivy_result
+        - name: Assert trivy is installed
           ansible.builtin.assert:
             that:
-              - osv_scanner_result.stat.exists
-              - osv_scanner_result.stat.executable
-            fail_msg: "osv-scanner is not installed or not executable"
-            success_msg: "osv-scanner is installed and executable"
+              - trivy_result.stat.exists
+              - trivy_result.stat.executable
+            fail_msg: "trivy is not installed or not executable"
+            success_msg: "trivy is installed and executable"
+    ## SBOMのテスト
+    - name: Test SBOM generation
+      block:
+        - name: Check SBOM file exists
+          ansible.builtin.stat:
+            path: "{{ report_sbom_dir }}/{{ report_sbom_filename }}"
+          register: sbom_result
+        - name: Read SBOM file
+          ansible.builtin.slurp:
+            src: "{{ report_sbom_dir }}/{{ report_sbom_filename }}"
+          register: sbom_content
+          when: sbom_result.stat.exists
+        - name: Assert SBOM is generated as CycloneDX
+          ansible.builtin.assert:
+            that:
+              - sbom_result.stat.exists
+              - sbom_result.stat.isreg
+              - sbom_result.stat.size > 0
+              - (sbom_content.content | b64decode | from_json).bomFormat == 'CycloneDX'
+              - (sbom_content.content | b64decode | from_json).components | selectattr('purl', 'defined') | list | length > 0
+            fail_msg: "SBOM is not generated correctly"
+            success_msg: "SBOM is generated correctly"
     ## リポジトリのテスト
     # - name: Test repository
     #   block:
@@ -133,7 +155,6 @@
             - traffic.md
             - user_group.md
             - file.md
-            - vulnerability.md
           register: report_files_result
         - name: Assert all report files exist
           ansible.builtin.assert:
@@ -145,3 +166,20 @@
           loop: "{{ report_files_result.results }}"
           loop_control:
             label: "{{ item.item }}"
+        - name: Check vulnerability report is not generated
+          ansible.builtin.stat:
+            path: "{{ report_dir }}/{{ inventory_hostname }}/vulnerability.md"
+          register: vulnerability_report_result
+        - name: Assert vulnerability report is not generated
+          ansible.builtin.assert:
+            that:
+              - not vulnerability_report_result.stat.exists
+            fail_msg: "vulnerability.md is generated while report_vulnerability_enabled is false"
+            success_msg: "vulnerability.md is not generated"
+    ## SBOMの目視確認用の取得
+    - name: Fetch generated SBOM
+      ansible.builtin.fetch:
+        src: "{{ report_sbom_dir }}/{{ report_sbom_filename }}"
+        dest: "{{ report_dir }}/{{ inventory_hostname }}/{{ report_sbom_filename }}"
+        flat: true
+      when: sbom_result.stat.exists

@@ -2,6 +2,12 @@
 ## テスト用のレポート出力先（ワークスペース内）
 report_dir: ./molecule-report
 
+## SBOMの出力先（サーバー上）
+report_sbom_dir: /var/sbom
+
+## SBOMのファイル名
+report_sbom_filename: sbom.cdx.json
+
 ## ディスク使用量を調査するディレクトリ
 report_disk_usage_dirs:
   - /etc

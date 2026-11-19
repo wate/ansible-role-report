@@ -1,0 +1,41 @@
+# code: language=ansible
+---
+- name: Install trivy repository dependency packages
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - gnupg
+      - python3-debian
+    state: present
+- name: Create GPG key directory
+  ansible.builtin.file:
+    path: "{{ report_trivy_apt_key_dest | dirname }}"
+    state: directory
+    mode: "0755"
+- name: Download GPG key
+  ansible.builtin.get_url:
+    url: "{{ report_trivy_apt_key_url }}"
+    dest: "{{ report_trivy_apt_key_download_dest }}"
+    mode: "0644"
+  register: gpg_key_download_result
+- name: Convert GPG key
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o {{ report_trivy_apt_key_dest }} {{ report_trivy_apt_key_download_dest }}
+  when: gpg_key_download_result is changed
+- name: Add trivy repository
+  ansible.builtin.deb822_repository:
+    name: trivy
+    uris: https://aquasecurity.github.io/trivy-repo/deb
+    suites: generic
+    components: main
+    signed_by: "{{ report_trivy_apt_key_dest }}"
+    enabled: true
+    state: present
+  register: apt_repository_result
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  when: apt_repository_result is changed
+- name: Install trivy
+  ansible.builtin.apt:
+    name: trivy

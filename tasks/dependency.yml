@@ -3,6 +3,6 @@
 - name: Install jc task
   ansible.builtin.import_tasks:
     file: dependency/jc.yml
-- name: Install osv-scanner task
+- name: Install trivy task
   ansible.builtin.import_tasks:
-    file: dependency/osv-scanner.yml
+    file: dependency/trivy.yml
